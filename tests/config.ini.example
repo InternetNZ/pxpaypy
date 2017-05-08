@@ -1,0 +1,8 @@
+################################################################################
+# Configurations for PxPay 2.0 API tests
+################################################################################
+
+[DEFAULT]
+URL = https://uat.paymentexpress.com/pxaccess/pxpay.aspx
+UserID = Your_dev_user_id
+AuthKey = Your_dev_auth_key
