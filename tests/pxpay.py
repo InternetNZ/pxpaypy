@@ -1,7 +1,9 @@
 from string import ascii_letters, digits
+from urllib import parse
 import configparser
-import random
 import unittest
+import uuid
+import webbrowser
 
 from xml.etree.ElementTree import Element
 from defusedxml.ElementTree import fromstring as parseXML
@@ -22,10 +24,18 @@ class TestPxPay(unittest.TestCase):
         config = configparser.ConfigParser()
         config.read("tests/config.ini")
         config = config["DEFAULT"]
+        # intialize PxPay
         self.pxpay = pxpay.PxPay(
             url=config["URL"],
             user_id=config["UserID"],
             auth_key=config["AuthKey"])
+        # generic transaction request
+        self.generic_request = {
+            "merchant_reference": "MREF",
+            "amount": 1.00,
+            "currency": "NZD",
+            "url_success": "https://pass.nzrs.nz",
+            "url_fail": "https://fail.nzrs.nz"}
 
     @given(
         merchant_reference=text(alphabet=ALPHANUMERIC, min_size=1),
@@ -44,7 +54,7 @@ class TestPxPay(unittest.TestCase):
             self, merchant_reference, transaction_type, amount, transaction_id,
             billing_id, data_1,
             data_2, data_3, email, optional_text):
-        """Test XML generation of make_reques function"""
+        """Test XML generation of make_reques method"""
         xml = self.pxpay.make_transaction_request(
             merchant_reference=merchant_reference,
             transaction_type=transaction_type,
@@ -63,19 +73,12 @@ class TestPxPay(unittest.TestCase):
         self.assertIsInstance(parseXML(xml), Element)
 
     def test_make_transaction_request(self):
-        """Tests make_transaction_request function"""
-        generic_request = {
-            "merchant_reference": "MREF",
-            "amount": 1.00,
-            "currency": "NZD",
-            "url_success": "https://pass.nzrs.nz",
-            "url_fail": "https://fail.nzrs.nz"}
-
+        """Tests make_transaction_request method"""
         # authentication transaction
         url = self.pxpay.make_transaction_request(
-            **generic_request,
+            **self.generic_request,
             transaction_type=pxpay.TXN_AUTH,
-            transaction_id="TID-{}".format(str(random.randint(10000, 999999))),
+            transaction_id=str(uuid.uuid4()).replace("-", "")[0:16],
             billing_id="BILLID")
         self.assertIsNotNone(url)
         self.assertIsInstance(url, str)
@@ -84,9 +87,9 @@ class TestPxPay(unittest.TestCase):
 
         # purchase transaction
         url = self.pxpay.make_transaction_request(
-            **generic_request,
+            **self.generic_request,
             transaction_type=pxpay.TXN_PURCHASE,
-            transaction_id="TID-{}".format(str(random.randint(10000, 999999))))
+            transaction_id=str(uuid.uuid4()).replace("-", "")[0:16])
         self.assertIsNotNone(url)
         self.assertIsInstance(url, str)
         response = requests.get(url)
@@ -96,7 +99,7 @@ class TestPxPay(unittest.TestCase):
         # attempt 1
         try:
             self.pxpay.make_transaction_request(
-                **generic_request,
+                **self.generic_request,
                 transaction_type=pxpay.TXN_AUTH,
                 transaction_id="TID-A")
         except Exception as e:
@@ -107,6 +110,46 @@ class TestPxPay(unittest.TestCase):
                 Exception,
                 msg="Request failed: TxnId/TxnRef duplicate"):
             self.pxpay.make_transaction_request(
-                **generic_request,
+                **self.generic_request,
                 transaction_type=pxpay.TXN_AUTH,
                 transaction_id="TID-A")
+
+    @given(result=text(alphabet=ALPHANUMERIC, min_size=1))
+    def test_get_transaction_status_mock(self, result):
+        """Tests XML generation of get_transaction_status method"""
+        xml = self.pxpay.get_transaction_status(result=result, mock=True)
+        self.assertIsInstance(parseXML(xml), Element)
+
+    def test_get_transaction_status(self):
+        """Test get transaction status"""
+        # authentication transaction
+        billing_id = str(uuid.uuid4()).replace("-", "")
+        transaction_id = str(uuid.uuid4()).replace("-", "")[0:16]
+        url = self.pxpay.make_transaction_request(
+            **self.generic_request,
+            transaction_type=pxpay.TXN_AUTH,
+            transaction_id=transaction_id,
+            billing_id=billing_id)
+        webbrowser.open(url)
+        result_url = input("Enter forwarding URL:")
+        query_string = parse.urlparse(result_url).query
+        self.assertTrue(len(query_string) > 0)
+        parsed_query_string = parse.parse_qs(query_string)
+        self.assertIn("userid", parsed_query_string)
+        self.assertIn("result", parsed_query_string)
+        result = parsed_query_string["result"][0]
+
+        # get transaction status
+        result = self.pxpay.get_transaction_status(result)
+        labels = [
+                "AmountSettlement", "AuthCode", "CardName", "CardNumber",
+                "DateExpiry", "DpsTxnRef", "Success", "ResponseText",
+                "DpsBillingId", "CardHolderName", "CurrencySettlement",
+                "TxnType", "CurrencyInput", "MerchantReference", "ClientInfo",
+                "TxnId", "BillingId", "TxnMac", "Cvc2ResultCode"]
+        for label in labels:
+            self.assertIn(label, result)
+        self.assertEqual(result["TxnType"], pxpay.TXN_AUTH)
+        self.assertEqual(result["TxnId"], transaction_id)
+        self.assertEqual(result["BillingId"], billing_id)
+        print("Transaction success: {}".format(result["Success"]))
