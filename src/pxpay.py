@@ -41,7 +41,7 @@ class PxPay:
         self.user_id = user_id
         self.auth_key = auth_key
 
-    def make_request(
+    def make_transaction_request(
             self, merchant_reference, transaction_type, amount, currency,
             transaction_id, url_success, url_fail, billing_id=None,
             data_1="", data_2="", data_3="", email_address="",

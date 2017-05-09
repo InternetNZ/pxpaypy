@@ -40,12 +40,12 @@ class TestPxPay(unittest.TestCase):
         data_3=text(alphabet=ALPHANUMERIC),
         email=text(alphabet=ALPHANUMERIC),
         optional_text=text(alphabet=ALPHANUMERIC))
-    def test_make_request_mock(
+    def test_make_transaction_request_mock(
             self, merchant_reference, transaction_type, amount, transaction_id,
             billing_id, data_1,
             data_2, data_3, email, optional_text):
         """Test XML generation of make_reques function"""
-        xml = self.pxpay.make_request(
+        xml = self.pxpay.make_transaction_request(
             merchant_reference=merchant_reference,
             transaction_type=transaction_type,
             amount=amount,
@@ -62,8 +62,8 @@ class TestPxPay(unittest.TestCase):
             mock=True)
         self.assertIsInstance(parseXML(xml), Element)
 
-    def test_make_request(self):
-        """Tests make_request function"""
+    def test_make_transaction_request(self):
+        """Tests make_transaction_request function"""
         generic_request = {
             "merchant_reference": "MREF",
             "amount": 1.00,
@@ -72,7 +72,7 @@ class TestPxPay(unittest.TestCase):
             "url_fail": "https://fail.nzrs.nz"}
 
         # authentication transaction
-        url = self.pxpay.make_request(
+        url = self.pxpay.make_transaction_request(
             **generic_request,
             transaction_type=pxpay.TXN_AUTH,
             transaction_id="TID-{}".format(str(random.randint(10000, 999999))),
@@ -83,7 +83,7 @@ class TestPxPay(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
         # purchase transaction
-        url = self.pxpay.make_request(
+        url = self.pxpay.make_transaction_request(
             **generic_request,
             transaction_type=pxpay.TXN_PURCHASE,
             transaction_id="TID-{}".format(str(random.randint(10000, 999999))))
@@ -95,7 +95,7 @@ class TestPxPay(unittest.TestCase):
         # duplicate transaction IDs
         # attempt 1
         try:
-            self.pxpay.make_request(
+            self.pxpay.make_transaction_request(
                 **generic_request,
                 transaction_type=pxpay.TXN_AUTH,
                 transaction_id="TID-A")
@@ -106,7 +106,7 @@ class TestPxPay(unittest.TestCase):
         with self.assertRaises(
                 Exception,
                 msg="Request failed: TxnId/TxnRef duplicate"):
-            self.pxpay.make_request(
+            self.pxpay.make_transaction_request(
                 **generic_request,
                 transaction_type=pxpay.TXN_AUTH,
                 transaction_id="TID-A")
