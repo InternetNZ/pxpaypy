@@ -8,7 +8,7 @@ import webbrowser
 from xml.etree.ElementTree import Element
 from defusedxml.ElementTree import fromstring as parseXML
 from hypothesis import given
-from hypothesis.strategies import floats, text
+from hypothesis.strategies import booleans, floats, text
 import requests
 
 from src import pxpay
@@ -34,8 +34,8 @@ class TestPxPay(unittest.TestCase):
             "merchant_reference": "MREF",
             "amount": 1.00,
             "currency": "NZD",
-            "url_success": "https://pass.nzrs.nz",
-            "url_fail": "https://fail.nzrs.nz"}
+            "url_success": config["URL_SUCCESS"],
+            "url_fail": config["URL_FAIL"]}
 
     @given(
         merchant_reference=text(alphabet=ALPHANUMERIC, min_size=1),
@@ -44,6 +44,7 @@ class TestPxPay(unittest.TestCase):
             min_size=1),
         amount=floats(min_value=00.00, max_value=999999.99),
         transaction_id=text(alphabet=ALPHANUMERIC, min_size=1),
+        add_bill_card=booleans(),
         billing_id=text(alphabet=ALPHANUMERIC),
         data_1=text(alphabet=ALPHANUMERIC),
         data_2=text(alphabet=ALPHANUMERIC),
@@ -52,8 +53,8 @@ class TestPxPay(unittest.TestCase):
         optional_text=text(alphabet=ALPHANUMERIC))
     def test_make_transaction_request_mock(
             self, merchant_reference, transaction_type, amount, transaction_id,
-            billing_id, data_1,
-            data_2, data_3, email, optional_text):
+            add_bill_card, billing_id, data_1, data_2, data_3, email,
+            optional_text):
         """Test XML generation of make_reques method"""
         xml = self.pxpay.make_transaction_request(
             merchant_reference=merchant_reference,
@@ -63,6 +64,7 @@ class TestPxPay(unittest.TestCase):
             transaction_id=transaction_id,
             url_success="https://pass.nzrs.nz",
             url_fail="https://fail.nzrs.nz",
+            add_bill_card=add_bill_card,
             billing_id=billing_id,
             data_1=data_1,
             data_2=data_2,
@@ -79,6 +81,7 @@ class TestPxPay(unittest.TestCase):
             **self.generic_request,
             transaction_type=pxpay.TXN_AUTH,
             transaction_id=str(uuid.uuid4()).replace("-", "")[0:16],
+            add_bill_card=True,
             billing_id="BILLID")
         self.assertIsNotNone(url)
         self.assertIsInstance(url, str)
@@ -129,6 +132,7 @@ class TestPxPay(unittest.TestCase):
             **self.generic_request,
             transaction_type=pxpay.TXN_AUTH,
             transaction_id=transaction_id,
+            add_bill_card=True,
             billing_id=billing_id)
         webbrowser.open(url)
         result_url = input("Enter forwarding URL:")
