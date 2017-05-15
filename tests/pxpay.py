@@ -1,11 +1,11 @@
 from string import ascii_letters, digits
 from urllib import parse
+from xml.etree.ElementTree import Element
 import configparser
 import unittest
 import uuid
 import webbrowser
 
-from xml.etree.ElementTree import Element
 from defusedxml.ElementTree import fromstring as parseXML
 from hypothesis import given
 from hypothesis.strategies import booleans, floats, text
@@ -150,7 +150,8 @@ class TestPxPay(unittest.TestCase):
                 "DateExpiry", "DpsTxnRef", "Success", "ResponseText",
                 "DpsBillingId", "CardHolderName", "CurrencySettlement",
                 "TxnType", "CurrencyInput", "MerchantReference", "ClientInfo",
-                "TxnId", "BillingId", "TxnMac", "Cvc2ResultCode"]
+                "TxnId", "BillingId", "TxnMac", "CardNumber2",
+                "Cvc2ResultCode"]
         for label in labels:
             self.assertIn(label, result)
         self.assertEqual(result["TxnType"], pxpay.TXN_AUTH)

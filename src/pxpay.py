@@ -1,7 +1,8 @@
 """DPS PaymentExpress PxPay 2.0 API"""
 
 import requests
-from defusedxml.ElementTree import fromstring as parseXML
+
+from . import helper
 
 # transaction types
 TXN_AUTH = "Auth"
@@ -114,24 +115,12 @@ class PxPay:
                 self.url,
                 data=xml,
                 headers={'Content-Type': 'application/xml'})
-            return self._process_status(response)
-
-    def _get_xml(self, response):
-        """Returns XML object from web response"""
-        if response.status_code != 200:
-            raise(Exception("Server responded with {status}: {reason}".format(
-                status=response.status_code, reason=response.reason)))
-        else:
-            try:
-                et = parseXML(response.text)
-            except Exception as e:
-                raise(Exception("Error parsing response: {description}".format(
-                    description=str(e))))
-            return et
+            xml_response = helper.get_xml(response)
+            return helper.process_status(xml_response)
 
     def _get_url(self, response):
         """Returns URL from PxPay response."""
-        et = self._get_xml(response)
+        et = helper.get_xml(response)
 
         if (et.get("valid") != "1"):
             raise(Exception("Invalid request."))
@@ -142,15 +131,3 @@ class PxPay:
         else:
             raise(Exception("Request failed: {reason}".format(
                 reason=et.find("ResponseText").text)))
-
-    def _process_status(self, response):
-        """Returns transaction status"""
-        et = self._get_xml(response)
-
-        if (et.get("valid") != "1"):
-            raise(Exception("Invalid request."))
-
-        result = {}
-        for element in et.getchildren():
-            result[element.tag] = element.text
-        return result
