@@ -8,3 +8,11 @@ UserID = Your_dev_user_id
 AuthKey = Your_dev_auth_key
 URL_SUCCESS = https://example.com
 URL_FAIL = https://example.com
+
+################################################################################
+# Configurations for PxPost (for token based transactions)
+################################################################################
+[DEFAULT_PXPOST]
+URL = https://uat.paymentexpress.com/pxpost.aspx
+UserName = Your_PXPost_dev_user_name
+Password = Your_PXPost_dev_password

@@ -135,6 +135,7 @@ class TestPxPay(unittest.TestCase):
             add_bill_card=True,
             billing_id=billing_id)
         webbrowser.open(url)
+        print("\n")
         result_url = input("Enter forwarding URL:")
         query_string = parse.urlparse(result_url).query
         self.assertTrue(len(query_string) > 0)

@@ -18,11 +18,22 @@ def get_xml(response):
 
 def process_status(et, pxpost=False):
     """Returns transaction status"""
-    if (et.get("valid") != "1"):
-        raise(Exception("Invalid request."))
+    if not pxpost:
+        if (int(et.get("valid")) != 1):
+            raise(Exception("Invalid request."))
+    try:
+        return xml_to_dir(et)
+    except Exception as e:
+        raise(Exception("Error parsing status: {}".format(str(e))))
 
+
+def xml_to_dir(et):
+    """Return a dictionary from XML.
+    NOTE: This method ignores attributes"""
     result = {}
     for element in et.getchildren():
-        result[element.tag] = element.text
-
+        if len(element.getchildren()) > 0:
+            result[element.tag] = xml_to_dir(element)
+        else:
+            result[element.tag] = element.text
     return result
