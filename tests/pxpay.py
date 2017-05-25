@@ -36,6 +36,14 @@ class TestPxPay(unittest.TestCase):
             "currency": "NZD",
             "url_success": config["URL_SUCCESS"],
             "url_fail": config["URL_FAIL"]}
+        # default labels for transaction result/status
+        self.labels = [
+                "AmountSettlement", "AuthCode", "CardName", "CardNumber",
+                "DateExpiry", "DpsTxnRef", "Success", "ResponseText",
+                "DpsBillingId", "CardHolderName", "CurrencySettlement",
+                "TxnType", "CurrencyInput", "MerchantReference", "ClientInfo",
+                "TxnId", "BillingId", "TxnMac", "CardNumber2",
+                "Cvc2ResultCode"]
 
     @given(
         merchant_reference=text(alphabet=ALPHANUMERIC, min_size=1),
@@ -46,6 +54,7 @@ class TestPxPay(unittest.TestCase):
         transaction_id=text(alphabet=ALPHANUMERIC, min_size=1),
         add_bill_card=booleans(),
         billing_id=text(alphabet=ALPHANUMERIC),
+        dps_billing_id=text(alphabet=ALPHANUMERIC),
         data_1=text(alphabet=ALPHANUMERIC),
         data_2=text(alphabet=ALPHANUMERIC),
         data_3=text(alphabet=ALPHANUMERIC),
@@ -53,8 +62,8 @@ class TestPxPay(unittest.TestCase):
         optional_text=text(alphabet=ALPHANUMERIC))
     def test_make_transaction_request_mock(
             self, merchant_reference, transaction_type, amount, transaction_id,
-            add_bill_card, billing_id, data_1, data_2, data_3, email,
-            optional_text):
+            add_bill_card, billing_id, dps_billing_id, data_1, data_2, data_3,
+            email, optional_text):
         """Test XML generation of make_reques method"""
         xml = self.pxpay.make_transaction_request(
             merchant_reference=merchant_reference,
@@ -66,6 +75,7 @@ class TestPxPay(unittest.TestCase):
             url_fail="https://fail.nzrs.nz",
             add_bill_card=add_bill_card,
             billing_id=billing_id,
+            dps_billing_id=dps_billing_id,
             data_1=data_1,
             data_2=data_2,
             data_3=data_3,
@@ -146,16 +156,86 @@ class TestPxPay(unittest.TestCase):
 
         # get transaction status
         result = self.pxpay.get_transaction_status(result)
-        labels = [
-                "AmountSettlement", "AuthCode", "CardName", "CardNumber",
-                "DateExpiry", "DpsTxnRef", "Success", "ResponseText",
-                "DpsBillingId", "CardHolderName", "CurrencySettlement",
-                "TxnType", "CurrencyInput", "MerchantReference", "ClientInfo",
-                "TxnId", "BillingId", "TxnMac", "CardNumber2",
-                "Cvc2ResultCode"]
-        for label in labels:
+        for label in self.labels:
             self.assertIn(label, result)
         self.assertEqual(result["TxnType"], pxpay.TXN_AUTH)
         self.assertEqual(result["TxnId"], transaction_id)
         self.assertEqual(result["BillingId"], billing_id)
+        print("Transaction success: {}".format(result["Success"]))
+
+    def test_make_transaction_request_rebill(self):
+        """Test for PxPay rebilling with user's CSC input."""
+        # authentication transaction
+        billing_id = str(uuid.uuid4()).replace("-", "")
+        url = self.pxpay.make_transaction_request(
+            **self.generic_request,
+            transaction_type=pxpay.TXN_AUTH,
+            transaction_id=str(uuid.uuid4()).replace("-", "")[0:16],
+            add_bill_card=True,
+            billing_id=billing_id)
+        webbrowser.open(url)
+        print("\n")
+        print("Make sure following transaction succeeds.")
+        result_url = input("Enter forwarding URL:")
+        query_string = parse.urlparse(result_url).query
+        self.assertTrue(len(query_string) > 0)
+        parsed_query_string = parse.parse_qs(query_string)
+        self.assertIn("userid", parsed_query_string)
+        self.assertIn("result", parsed_query_string)
+        result = parsed_query_string["result"][0]
+
+        # get transaction status
+        result = self.pxpay.get_transaction_status(result)
+        self.assertIn("BillingId", result)
+        self.assertIn("DpsBillingId", result)
+        dps_billing_id = result["DpsBillingId"]
+
+        # attempt to rebill with BillingID
+        url = self.pxpay.make_transaction_request(
+            **self.generic_request,
+            transaction_type=pxpay.TXN_PURCHASE,
+            transaction_id=str(uuid.uuid4()).replace("-", "")[0:16],
+            billing_id=billing_id)
+        webbrowser.open(url)
+        print("\n")
+        print("Make sure following transaction succeeds.")
+        result_url = input("Enter forwarding URL:")
+        query_string = parse.urlparse(result_url).query
+        self.assertTrue(len(query_string) > 0)
+        parsed_query_string = parse.parse_qs(query_string)
+        self.assertIn("userid", parsed_query_string)
+        self.assertIn("result", parsed_query_string)
+        result = parsed_query_string["result"][0]
+
+        # get transaction status
+        result = self.pxpay.get_transaction_status(result)
+        for label in self.labels:
+            self.assertIn(label, result)
+        self.assertEqual(result["TxnType"], pxpay.TXN_PURCHASE)
+        self.assertEqual(result["BillingId"], billing_id)
+        print("Transaction success: {}".format(result["Success"]))
+
+        # attempt to rebil with DpsBillingID
+        url = self.pxpay.make_transaction_request(
+            **self.generic_request,
+            transaction_type=pxpay.TXN_PURCHASE,
+            transaction_id=str(uuid.uuid4()).replace("-", "")[0:16],
+            dps_billing_id=dps_billing_id)
+        webbrowser.open(url)
+        print("\n")
+        print("Make sure following transaction succeeds.")
+        result_url = input("Enter forwarding URL:")
+        query_string = parse.urlparse(result_url).query
+        self.assertTrue(len(query_string) > 0)
+        parsed_query_string = parse.parse_qs(query_string)
+        self.assertIn("userid", parsed_query_string)
+        self.assertIn("result", parsed_query_string)
+        result = parsed_query_string["result"][0]
+
+        # get transaction status
+        result = self.pxpay.get_transaction_status(result)
+        for label in self.labels:
+            self.assertIn(label, result)
+        self.assertEqual(result["TxnType"], pxpay.TXN_PURCHASE)
+        self.assertEqual(result["DpsBillingId"], dps_billing_id)
         print("Transaction success: {}".format(result["Success"]))

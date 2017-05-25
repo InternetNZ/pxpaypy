@@ -13,6 +13,8 @@ _BILL_CARD = "<EnableAddBillCard>1</EnableAddBillCard>"
 
 _BILLING_ID = "<BillingId>{billing_id}</BillingId>"
 
+_DPS_BILLING_ID = "<DpsBillingId>{dps_billing_id}</DpsBillingId>"
+
 _OPTIONAL = "<Opt>{optional_text}</Opt>"
 
 _TRANSACTION_REQUEST = """
@@ -30,6 +32,7 @@ _TRANSACTION_REQUEST = """
     <TxnId>{transaction_id}</TxnId>
     {bill_card}
     {billing_id}
+    {dps_billing_id}
     <UrlSuccess>{url_success}</UrlSuccess>
     <UrlFail>{url_fail}</UrlFail>
     {optional}
@@ -53,8 +56,8 @@ class PxPay:
     def make_transaction_request(
             self, merchant_reference, transaction_type, amount, currency,
             transaction_id, url_success, url_fail, add_bill_card=False,
-            billing_id=None, data_1="", data_2="", data_3="", email_address="",
-            optional_text=None, mock=False):
+            billing_id=None, dps_billing_id=None, data_1="", data_2="",
+            data_3="", email_address="", optional_text=None, mock=False):
         """Returns PxPay URL for credit card payment"""
 
         # check if add bill card is set
@@ -68,6 +71,13 @@ class PxPay:
             billing_id = _BILLING_ID.format(billing_id=billing_id)
         else:
             billing_id = ""
+
+        # check if dps billing id is present
+        if dps_billing_id is not None:
+            dps_billing_id = _DPS_BILLING_ID.format(
+                dps_billing_id=dps_billing_id)
+        else:
+            dps_billing_id = ""
 
         # check if optional text is present
         if optional_text is not None:
@@ -89,6 +99,7 @@ class PxPay:
             transaction_id=transaction_id,
             bill_card=bill_card,
             billing_id=billing_id,
+            dps_billing_id=dps_billing_id,
             url_success=url_success,
             url_fail=url_fail,
             optional=optional)
