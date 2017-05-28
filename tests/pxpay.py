@@ -198,7 +198,6 @@ class TestPxPay(unittest.TestCase):
             billing_id=billing_id)
         webbrowser.open(url)
         print("\n")
-        print("Make sure following transaction succeeds.")
         result_url = input("Enter forwarding URL:")
         query_string = parse.urlparse(result_url).query
         self.assertTrue(len(query_string) > 0)
@@ -215,7 +214,7 @@ class TestPxPay(unittest.TestCase):
         self.assertEqual(result["BillingId"], billing_id)
         print("Transaction success: {}".format(result["Success"]))
 
-        # attempt to rebil with DpsBillingID
+        # attempt to rebill with DpsBillingID
         url = self.pxpay.make_transaction_request(
             **self.generic_request,
             transaction_type=pxpay.TXN_PURCHASE,
@@ -223,7 +222,6 @@ class TestPxPay(unittest.TestCase):
             dps_billing_id=dps_billing_id)
         webbrowser.open(url)
         print("\n")
-        print("Make sure following transaction succeeds.")
         result_url = input("Enter forwarding URL:")
         query_string = parse.urlparse(result_url).query
         self.assertTrue(len(query_string) > 0)
