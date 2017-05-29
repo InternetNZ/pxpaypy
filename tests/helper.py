@@ -6,7 +6,7 @@ from xml.etree.ElementTree import Element
 from defusedxml.ElementTree import fromstring as parseXML
 import requests
 
-from src import helper, pxpay
+from pxpaypy import helper, pxpay
 
 
 class TestHelper(unittest.TestCase):

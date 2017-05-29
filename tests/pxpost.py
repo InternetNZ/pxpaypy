@@ -10,7 +10,7 @@ from defusedxml.ElementTree import fromstring as parseXML
 from hypothesis import given
 from hypothesis.strategies import floats, text
 
-from src import pxpay, pxpost
+from pxpaypy import pxpay, pxpost
 
 ALPHANUMERIC = [ascii_letters, digits]
 

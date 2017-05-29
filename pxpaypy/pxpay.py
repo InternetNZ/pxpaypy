@@ -2,7 +2,7 @@
 
 import requests
 
-from . import helper
+from pxpaypy import helper
 
 # transaction types
 TXN_AUTH = "Auth"

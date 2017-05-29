@@ -11,7 +11,7 @@ from hypothesis import given
 from hypothesis.strategies import booleans, floats, text
 import requests
 
-from src import pxpay
+from pxpaypy import pxpay
 
 ALPHANUMERIC = [ascii_letters, digits]
 
