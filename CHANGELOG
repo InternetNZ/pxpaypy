@@ -1,0 +1,8 @@
+Changelog
+=========
+
+v0.1.0-alpha
+------------
+* Initial release.
+* Supports PaymentExpress PxPay 2.0 API.
+* Supports stored credit card transactions via PaymentExpress PxPost.
