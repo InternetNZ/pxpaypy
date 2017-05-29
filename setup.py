@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="PxPayPy",
-    version="0.1.0-alpha",
+    version="0.1.0a1",
     packages=find_packages(),
 
     install_requires=["defusedxml>=0.5", "requests>=2.13"],

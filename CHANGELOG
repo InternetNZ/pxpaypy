@@ -1,8 +1,8 @@
 Changelog
 =========
 
-v0.1.0-alpha
-------------
-* Initial release.
+v0.1.0a1, 30/05/2017
+------------------
+* Initial alpha release.
 * Supports PaymentExpress PxPay 2.0 API.
 * Supports stored credit card transactions via PaymentExpress PxPost.
