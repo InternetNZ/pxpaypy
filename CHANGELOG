@@ -1,8 +1,13 @@
 Changelog
 =========
 
+v0.1.0a2, 26/06/2017
+--------------------
+* Released under GNU Affro GPL license.
+
+
 v0.1.0a1, 30/05/2017
-------------------
+--------------------
 * Initial alpha release.
 * Supports PaymentExpress PxPay 2.0 API.
 * Supports stored credit card transactions via PaymentExpress PxPost.

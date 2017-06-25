@@ -323,4 +323,4 @@ License
 Copyright (C) 2017 `NZRS Ltd <https://nzrs.net.nz/>`_.
 
 The project is licensed under the 
-`GNU GPL version 3 <https://github.com/NZRS/pxpaypy/blob/master/LICENSE>`_.
+`GNU AGPL version 3 <https://github.com/NZRS/pxpaypy/blob/master/LICENSE>`_.
