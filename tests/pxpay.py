@@ -103,22 +103,29 @@ class TestPxPay(unittest.TestCase):
     def test_make_transaction_request(self):
         """Tests make_transaction_request method"""
         # authentication transaction
-        url = self.pxpay.make_transaction_request(
+        response = self.pxpay.make_transaction_request(
             **self.generic_request,
             transaction_type=pxpay.TXN_AUTH,
             transaction_id=str(uuid.uuid4()).replace("-", "")[0:16],
             add_bill_card=True,
             billing_id="BILLID")
+
+        # text XML
+        self.assertIsInstance(parseXML(response["xml"]), Element)
+
+        # test URL
+        url = response["url"]
         self.assertIsNotNone(url)
         self.assertIsInstance(url, str)
         response = requests.get(url)
         self.assertEqual(response.status_code, 200)
 
         # purchase transaction
-        url = self.pxpay.make_transaction_request(
+        response = self.pxpay.make_transaction_request(
             **self.generic_request,
             transaction_type=pxpay.TXN_PURCHASE,
             transaction_id=str(uuid.uuid4()).replace("-", "")[0:16])
+        url = response["url"]
         self.assertIsNotNone(url)
         self.assertIsInstance(url, str)
         response = requests.get(url)
@@ -154,12 +161,13 @@ class TestPxPay(unittest.TestCase):
         # authentication transaction
         billing_id = str(uuid.uuid4()).replace("-", "")
         transaction_id = str(uuid.uuid4()).replace("-", "")[0:16]
-        url = self.pxpay.make_transaction_request(
+        response = self.pxpay.make_transaction_request(
             **self.generic_request,
             transaction_type=pxpay.TXN_AUTH,
             transaction_id=transaction_id,
             add_bill_card=True,
             billing_id=billing_id)
+        url = response["url"]
         webbrowser.open(url)
         print("\n")
         result_url = input("Enter forwarding URL:")
@@ -171,7 +179,8 @@ class TestPxPay(unittest.TestCase):
         result = parsed_query_string["result"][0]
 
         # get transaction status
-        result = self.pxpay.get_transaction_status(result)
+        response = self.pxpay.get_transaction_status(result)
+        result = response["result"]
         for label in self.labels:
             self.assertIn(label, result)
         self.assertEqual(result["TxnType"], pxpay.TXN_AUTH)
@@ -183,12 +192,13 @@ class TestPxPay(unittest.TestCase):
         """Test for PxPay rebilling with user's CSC input."""
         # authentication transaction
         billing_id = str(uuid.uuid4()).replace("-", "")
-        url = self.pxpay.make_transaction_request(
+        response = self.pxpay.make_transaction_request(
             **self.generic_request,
             transaction_type=pxpay.TXN_AUTH,
             transaction_id=str(uuid.uuid4()).replace("-", "")[0:16],
             add_bill_card=True,
             billing_id=billing_id)
+        url = response["url"]
         webbrowser.open(url)
         print("\n")
         print("Make sure following transaction succeeds.")
@@ -201,17 +211,24 @@ class TestPxPay(unittest.TestCase):
         result = parsed_query_string["result"][0]
 
         # get transaction status
-        result = self.pxpay.get_transaction_status(result)
+        response = self.pxpay.get_transaction_status(result)
+
+        # text XML
+        self.assertIsInstance(parseXML(response["xml"]), Element)
+
+        # test result
+        result = response["result"]
         self.assertIn("BillingId", result)
         self.assertIn("DpsBillingId", result)
         dps_billing_id = result["DpsBillingId"]
 
         # attempt to rebill with BillingID
-        url = self.pxpay.make_transaction_request(
+        response = self.pxpay.make_transaction_request(
             **self.generic_request,
             transaction_type=pxpay.TXN_PURCHASE,
             transaction_id=str(uuid.uuid4()).replace("-", "")[0:16],
             billing_id=billing_id)
+        url = response["url"]
         webbrowser.open(url)
         print("\n")
         result_url = input("Enter forwarding URL:")
@@ -223,7 +240,8 @@ class TestPxPay(unittest.TestCase):
         result = parsed_query_string["result"][0]
 
         # get transaction status
-        result = self.pxpay.get_transaction_status(result)
+        response = self.pxpay.get_transaction_status(result)
+        result = response["result"]
         for label in self.labels:
             self.assertIn(label, result)
         self.assertEqual(result["TxnType"], pxpay.TXN_PURCHASE)
@@ -231,11 +249,12 @@ class TestPxPay(unittest.TestCase):
         print("Transaction success: {}".format(result["Success"]))
 
         # attempt to rebill with DpsBillingID
-        url = self.pxpay.make_transaction_request(
+        response = self.pxpay.make_transaction_request(
             **self.generic_request,
             transaction_type=pxpay.TXN_PURCHASE,
             transaction_id=str(uuid.uuid4()).replace("-", "")[0:16],
             dps_billing_id=dps_billing_id)
+        url = response["url"]
         webbrowser.open(url)
         print("\n")
         result_url = input("Enter forwarding URL:")
@@ -247,7 +266,8 @@ class TestPxPay(unittest.TestCase):
         result = parsed_query_string["result"][0]
 
         # get transaction status
-        result = self.pxpay.get_transaction_status(result)
+        response = self.pxpay.get_transaction_status(result)
+        result = response["result"]
         for label in self.labels:
             self.assertIn(label, result)
         self.assertEqual(result["TxnType"], pxpay.TXN_PURCHASE)

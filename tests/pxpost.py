@@ -88,7 +88,7 @@ class TestPxPost(unittest.TestCase):
         # Create token
         # authentication transaction
         billing_id = str(uuid.uuid4()).replace("-", "")
-        url = _pxpay.make_transaction_request(
+        response = _pxpay.make_transaction_request(
             merchant_reference="MREF",
             amount=1.00,
             currency="NZD",
@@ -98,6 +98,7 @@ class TestPxPost(unittest.TestCase):
             transaction_id=str(uuid.uuid4()).replace("-", "")[0:16],
             add_bill_card=True,
             billing_id=billing_id)
+        url = response["url"]
         print("\n")
         print("Make sure following transaction succeeds.")
         webbrowser.open(url)
@@ -110,7 +111,8 @@ class TestPxPost(unittest.TestCase):
         result = parsed_query_string["result"][0]
 
         # get transaction status
-        result = _pxpay.get_transaction_status(result)
+        response = _pxpay.get_transaction_status(result)
+        result = response["result"]
         self.assertIn("Success", result)
         self.assertIn("CardNumber2", result)
         self.assertIn("BillingId", result)
@@ -122,7 +124,7 @@ class TestPxPost(unittest.TestCase):
         # make token based transaction
         transaction_id = str(uuid.uuid4()).replace("-", "")[0:16]
         amount = 10.00
-        result = self.pxpost.make_token_based_transaction(
+        response = self.pxpost.make_token_based_transaction(
             merchant_reference="MREF_POST",
             transaction_type=pxpost.TXN_PURCHASE,
             amount=amount,
@@ -130,6 +132,10 @@ class TestPxPost(unittest.TestCase):
             card_number_2=card_number_2,
             transaction_id=transaction_id,
             billing_id=billing_id)
+
+        self.assertIsInstance(parseXML(response["xml"]), Element)
+
+        result = response["result"]
 
         labels = ["ResponseText", "Success", "DpsTxnRef", "TxnRef"]
         for label in labels:
