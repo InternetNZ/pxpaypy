@@ -196,7 +196,7 @@ as well as rebilling with user insteraction (i.e. user has to enter CSC).
 +----------------------+------------------------------------------------------+
 |``transaction_id``    |Unique transaction ID *(required)*                    |
 +----------------------+------------------------------------------------------+
-|``url_success``       |URL for suceessful transactions *(required)*          |
+|``url_success``       |URL for successful transactions *(required)*          |
 +----------------------+------------------------------------------------------+
 |``url_fail``          |URL for failed transactions *(required)*              |
 +----------------------+------------------------------------------------------+
@@ -204,9 +204,9 @@ as well as rebilling with user insteraction (i.e. user has to enter CSC).
 |                      |                                                      |
 |                      |Default is ``False``.                                 |
 +----------------------+------------------------------------------------------+
-|``billing_id``        |Billing ID                                            |
+|``billing_id``        |Billing ID *(use this when rebill a stored card)*     |
 +----------------------+------------------------------------------------------+
-|``dps_billing_id``    |DPS billing ID *(use this when rebill a stored card)* |
+|``dps_billing_id``    |DPS billing ID                                        |
 +----------------------+------------------------------------------------------+
 |``data_1``            |Data 1                                                |
 +----------------------+------------------------------------------------------+
