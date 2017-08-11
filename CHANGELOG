@@ -1,10 +1,14 @@
 Changelog
 =========
 
+v0.1.1a1, 11/08/2017
+--------------------
+* All the functions returns original XML form DPS for audit purposes (#1)
+* Improvements to documentation.
+
 v0.1.0a2, 26/06/2017
 --------------------
 * Released under GNU Affero GPL license.
-
 
 v0.1.0a1, 30/05/2017
 --------------------
