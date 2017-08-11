@@ -78,4 +78,5 @@ class PxPost:
                 data=xml,
                 headers={'Content-Type': 'application/xml'})
             xml_response = helper.get_xml(response)
-            return helper.process_status(xml_response, True)
+            dps_response = helper.process_status(xml_response, True)
+            return {"result": dps_response, "xml": response.text}
