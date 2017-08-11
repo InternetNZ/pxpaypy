@@ -73,7 +73,7 @@ class PxPay:
             transaction_id, url_success, url_fail, add_bill_card=False,
             billing_id=None, dps_billing_id=None, data_1="", data_2="",
             data_3="", email_address="", optional_text=None, mock=False):
-        """Returns PxPay URL for credit card payment"""
+        """Returns PxPay URL for credit card payment and original XML"""
 
         # check if add bill card is set
         if add_bill_card:
@@ -126,10 +126,11 @@ class PxPay:
                 self.url,
                 data=xml,
                 headers={'Content-Type': 'application/xml'})
-            return self._get_url(response)
+            url = self._get_url(response)
+            return {"url": url, "xml": response.text}
 
     def get_transaction_status(self, result, mock=False):
-        """Returns transaction status"""
+        """Returns transaction result & original XML"""
         xml = _RESULT_REQUEST.format(
             user_id=self.user_id,
             auth_key=self.auth_key,
@@ -142,7 +143,8 @@ class PxPay:
                 data=xml,
                 headers={'Content-Type': 'application/xml'})
             xml_response = helper.get_xml(response)
-            return helper.process_status(xml_response)
+            dps_response = helper.process_status(xml_response)
+            return {"result": dps_response, "xml": response.text}
 
     def _get_url(self, response):
         """Returns URL from PxPay response."""
