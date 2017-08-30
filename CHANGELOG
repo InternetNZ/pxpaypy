@@ -1,6 +1,10 @@
 Changelog
 =========
 
+v0.1.2a1, 31/08/2017
+--------------------
+* Fixed issues in setup.py file.
+
 v0.1.1a1, 11/08/2017
 --------------------
 * All the functions returns original XML form DPS for audit purposes (#1)
