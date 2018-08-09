@@ -25,6 +25,10 @@ authentication details
 
         python -m unittest discover tests -p "*.py"
 
+
+* Some tests needs manual intervention. If you want to skip those tests, set
+environment variable `NO_MANUAL=1`.
+
 ## Contribute
 * Issue Tracker: https://github.com/NZRS/pxpaypy/issues
 * Source Code: https://github.com/NZRS/pxpaypy

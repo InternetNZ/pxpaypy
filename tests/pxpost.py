@@ -14,6 +14,7 @@
 # License along with PxPayPy. If not, see
 # <http://www.gnu.org/licenses/>.
 
+from os import environ
 from string import ascii_letters, digits
 from urllib import parse
 from xml.etree.ElementTree import Element
@@ -78,6 +79,13 @@ class TestPxPost(unittest.TestCase):
         self.assertIsInstance(parseXML(xml), Element)
 
     def test_make_token_based_transaction(self):
+        """Test token based transaction"""
+        try:
+            environ["NO_MANUAL"]
+            raise unittest.SkipTest("Needs manual intervention.")
+        except KeyError as e:
+            pass
+
         # Initiate PxPay
         _config = self.config["DEFAULT"]
         _pxpay = pxpay.PxPay(

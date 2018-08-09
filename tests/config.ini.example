@@ -4,8 +4,8 @@
 
 [DEFAULT]
 URL = https://uat.paymentexpress.com/pxaccess/pxpay.aspx
-UserID = Your_dev_user_id
-AuthKey = Your_dev_auth_key
+UserID = dev_user_id
+AuthKey = dev_auth_key
 URL_SUCCESS = https://example.com
 URL_FAIL = https://example.com
 
@@ -14,5 +14,5 @@ URL_FAIL = https://example.com
 ################################################################################
 [DEFAULT_PXPOST]
 URL = https://uat.paymentexpress.com/pxpost.aspx
-UserName = Your_PXPost_dev_user_name
-Password = Your_PXPost_dev_password
+UserName = PXPost_dev_user_name
+Password = PXPost_dev_password
