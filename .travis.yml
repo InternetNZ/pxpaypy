@@ -1,8 +1,5 @@
 language: python
 python:
-- '2.7'
-- '3.3'
-- '3.4'
 - '3.5'
 - 3.5-dev
 - '3.6'
@@ -11,6 +8,7 @@ python:
 install:
 - pip install -r requirements.txt
 - pip install -r requirements.dev.txt
+- pip install -r requirements.docs.txt
 script:
 - cp tests/config.ini.example tests/config.ini
 - sed -i "s/dev_user_id/${PXPAY_USER_ID}/" tests/config.ini
@@ -18,6 +16,7 @@ script:
 - sed -i "s/PXPost_dev_user_name/${PXPOST_USER_NAME}/" tests/config.ini
 - sed -i "s/PXPost_dev_password/${PXPOST_PASSWORD}/" tests/config.ini
 - python -m unittest discover tests -p "*.py"
+- sphinx-build -nW  docs docs/_build
 env:
   global:
   - NO_MANUAL=1
