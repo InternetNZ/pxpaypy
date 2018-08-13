@@ -6,7 +6,8 @@
 PxPayPy
 =======
 
-PxPayPy is a Python library for DPS PaymentExpress PxPay 2.0 API.
+PxPayPy is a Python library for DPS PaymentExpress PxPay 2.0 API. PxPayPy has
+been tested to work with Python 3.5+.
 
 .. toctree::
    :maxdepth: 2
@@ -23,6 +24,8 @@ PxPayPy is a Python library for DPS PaymentExpress PxPay 2.0 API.
 * :ref:`pxpost_make_token_based_transaction`
 * :ref:`errors_and_exceptions`
 * :ref:`contribute`
+    * :ref:`running_tests`
+    * :ref:`building_documentation`
 * :ref:`license`
 
 .. _features:
@@ -320,8 +323,51 @@ PxPayPy will throw an Exception.
 Contribute
 ==========
 
-* Issue Tracker: https://github.com/NZRS/pxpaypy/issues
-* Source Code: https://github.com/NZRS/pxpaypy
+* Issue Tracker: https://github.com/InternetNZ/pxpaypy/issues
+* Source Code: https://github.com/InternetNZ/pxpaypy
+
+.. _running_tests:
+
+-------------
+Running tests
+-------------
+
+To run PxPayPy tests, you need an UAT PxPay and PxPost accounts from DPS.
+
+Install required Python libraries::
+
+  pip install -r requirements.txt
+  pip install -r requirements.dev.txt
+
+Copy example configuration file and edit configuration file with UAT
+authentication details::
+
+    cp tests/config.ini.example tests/config.ini
+
+Run tests::
+
+  python -m unittest discover tests -p "*.py"
+
+Some tests needs manual intervention. If you want to skip those tests, set
+environment variable ``NO_MANUAL=1``.
+
+.. _building_documentation:
+
+----------------------
+Building Documentation
+----------------------
+
+PxPayPy uses `Sphinx <http://www.sphinx-doc.org/>`_ to generate documentation.
+
+Install required Python libraries::
+
+  pip install -r requirements.docs.txt
+
+Build documentation::
+
+  sphinx-build -nW  docs docs/_build
+
+Resulting documentations will be available on ``docs/_build`` directory.
 
 .. _license:
 
@@ -329,7 +375,8 @@ Contribute
 License
 =======
 
-Copyright (C) 2017 `NZRS Ltd <https://nzrs.net.nz/>`_.
+Copyright (C) 2018 `Internet New Zealand Inc <https://internetnz.nz/>`_.
 
 The project is licensed under the 
-`GNU AGPL version 3 <https://github.com/NZRS/pxpaypy/blob/master/LICENSE>`_.
+`GNU AGPL version 3
+<https://github.com/InternetNZ/pxpaypy/blob/master/LICENSE>`_.

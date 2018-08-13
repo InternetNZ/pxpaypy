@@ -10,12 +10,12 @@ setup(
     py_modules=["pxpaypy"],
 
     author="Kesara Rathnayake",
-    author_email="kesara@nzrs.net.nz",
+    author_email="kesara@internetnz.net.nz",
     description="Python library for DPS PaymentExpress PxPay 2.0 API.",
     long_description="""\
 Python library for DPS PaymentExpress PxPay 2.0 API. Also supports stored
 credit card payments via PaymentExpress PxPost.""",
     license="GNU AGPL v3",
     keywords="dps paymentexpress pxpay pxpost api",
-    url="https://github.com/NZRS/pxpaypy",
+    url="https://github.com/InternetNZ/pxpaypy",
 )

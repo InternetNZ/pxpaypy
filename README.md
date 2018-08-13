@@ -29,12 +29,23 @@ authentication details
 * Some tests needs manual intervention. If you want to skip those tests, set
 environment variable `NO_MANUAL=1`.
 
+## Building Documentation
+* Install required Python libraries
+
+        pip install -r requirements.docs.txt
+
+* Build documentation
+
+        sphinx-build -nW  docs docs/_build
+
+* Resulting documentations will be available on `docs/_build directory`.
+
 ## Contribute
-* Issue Tracker: https://github.com/NZRS/pxpaypy/issues
-* Source Code: https://github.com/NZRS/pxpaypy
+* Issue Tracker: https://github.com/InternetNZ/pxpaypy/issues
+* Source Code: https://github.com/InternetNZ/pxpaypy
 
 ## License
-Copyright (C) 2017 [NZRS Ltd](https://nzrs.net.nz/).
+Copyright (C) 2018 [Internet New Zealand Inc.](https://internetnz.nz/).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
