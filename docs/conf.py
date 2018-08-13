@@ -47,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PxPayPy'
-copyright = '2017, NZRS Ltd'
+copyright = '2018, InternetNZ Ltd'
 author = 'Kesara Rathnayake'
 
 # The version info for the project you're documenting, acts as replacement for
