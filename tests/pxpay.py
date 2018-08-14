@@ -14,6 +14,7 @@
 # License along with PxPayPy. If not, see
 # <http://www.gnu.org/licenses/>.
 
+from os import environ
 from string import ascii_letters, digits
 from urllib import parse
 from xml.etree.ElementTree import Element
@@ -158,6 +159,12 @@ class TestPxPay(unittest.TestCase):
 
     def test_get_transaction_status(self):
         """Test get transaction status"""
+        try:
+            environ["NO_MANUAL"]
+            raise unittest.SkipTest("Needs manual intervention.")
+        except KeyError as e:
+            pass
+
         # authentication transaction
         billing_id = str(uuid.uuid4()).replace("-", "")
         transaction_id = str(uuid.uuid4()).replace("-", "")[0:16]
@@ -190,6 +197,12 @@ class TestPxPay(unittest.TestCase):
 
     def test_make_transaction_request_rebill(self):
         """Test for PxPay rebilling with user's CSC input."""
+        try:
+            environ["NO_MANUAL"]
+            raise unittest.SkipTest("Needs manual intervention.")
+        except KeyError as e:
+            pass
+
         # authentication transaction
         billing_id = str(uuid.uuid4()).replace("-", "")
         response = self.pxpay.make_transaction_request(
