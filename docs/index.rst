@@ -22,6 +22,7 @@ been tested to work with Python 3.5+.
 * :ref:`make_transaction_request`
 * :ref:`get_transaction_status`
 * :ref:`pxpost_make_token_based_transaction`
+  :ref:`transaction_types`
 * :ref:`errors_and_exceptions`
 * :ref:`contribute`
     * :ref:`running_tests`
@@ -55,6 +56,7 @@ Setting Up
 
 To initialize PxPay with *URL*, *PxPay User ID* and *PxPay Key*::
 
+    from pxpaypy.pxpay import PxPay
     pxpay = PxPay("https://<pxpay url>", "<user id>", "<pxpay key>")
 
 .. _first_transaction:
@@ -164,6 +166,7 @@ and ``BillingID`` used in that transaction.
 
 Initiate PxPost with *URL*, *PxPost User Name* and *PxPost Password*::
 
+    from pxpaypy.pxpost import PxPost
     pxpost = PxPost("https://<pxpost url>", "<user name>", "<password>")
 
 To initiate token based transaction use ``make_token_based_transaction`` method::
@@ -307,6 +310,34 @@ This method returns a Python dictionary with XML tags returned by PxPost API.
 |                      |                                                      |
 |                      |Default is ``False``.                                 |
 +----------------------+------------------------------------------------------+
+
+.. _transaction_types:
+
+=================
+Transaction Types
+=================
+
+PxPay transaction types:
++----------------+--------------------------+-----------------------------------------+
+|Label           |Description               |Python import                            |
++================+==========================+=========================================+
+|``TXN_AUTH``    |Authentication transction |``from pxpaypy.pxpay import TXN_AUTH``   |
++----------------+--------------------------+-----------------------------------------+
+|``TXN_PURCHASE``|Purchase trasction        |``from pxpaypy.pxpay import TXN_PURCHAE``|
++----------------+--------------------------+-----------------------------------------+
+
+PxPost transaction types:
++----------------+---------------------+-------------------------------------------+
+|Label           |Descritption         |Python import                              |
++================+=====================+===========================================+
+|``TXN_AUTH``    |Auth transaction     |``from pxpaypy.pxpost import TXN_AUTH``    |
++----------------+---------------------+-------------------------------------------+
+|``TXN_COMPLETE``|Comlete transaction  |``from pxpaypy.pxpost import TXN_COMPLETE``|
++----------------+---------------------+-------------------------------------------+
+|``TXN_PURCHASE``|Purchase transaction |``from pxpaypy.pxpost import TXN_PURCHASE``|
++----------------+---------------------+-------------------------------------------+
+|``TXN_REFUND``  |Refund transaction   |``from pxpaypy.pxpost import TXN_REFUND``  |
++----------------+---------------------+-------------------------------------------+
 
 .. _errors_and_exceptions:
 
