@@ -319,13 +319,13 @@ Transaction Types
 
 PxPay transaction types:
 
++----------------+---------------------------+------------------------------------------+
+|Label           |Description                |Python import                             |
++================+===========================+==========================================+
+|``TXN_AUTH``    |Authentication transaction |``from pxpaypy.pxpay import TXN_AUTH``    |
 +----------------+---------------------------+-----------------------------------------+
-|Label           |Description                |Python import                            |
-+================+===========================+=========================================+
-|``TXN_AUTH``    |Authentication transaction |``from pxpaypy.pxpay import TXN_AUTH``   |
-+----------------+---------------------------+-----------------------------------------+
-|``TXN_PURCHASE``|Purchase transaction       |``from pxpaypy.pxpay import TXN_PURCHAE``|
-+----------------+---------------------------+-----------------------------------------+
+|``TXN_PURCHASE``|Purchase transaction       |``from pxpaypy.pxpay import TXN_PURCHASE``|
++----------------+---------------------------+------------------------------------------+
 
 PxPost transaction types:
 
