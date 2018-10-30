@@ -330,11 +330,11 @@ PxPay transaction types:
 PxPost transaction types:
 
 +----------------+---------------------+-------------------------------------------+
-|Label           |Descritption         |Python import                              |
+|Label           |Description          |Python import                              |
 +================+=====================+===========================================+
 |``TXN_AUTH``    |Auth transaction     |``from pxpaypy.pxpost import TXN_AUTH``    |
 +----------------+---------------------+-------------------------------------------+
-|``TXN_COMPLETE``|Comlete transaction  |``from pxpaypy.pxpost import TXN_COMPLETE``|
+|``TXN_COMPLETE``|Complete transaction |``from pxpaypy.pxpost import TXN_COMPLETE``|
 +----------------+---------------------+-------------------------------------------+
 |``TXN_PURCHASE``|Purchase transaction |``from pxpaypy.pxpost import TXN_PURCHASE``|
 +----------------+---------------------+-------------------------------------------+
