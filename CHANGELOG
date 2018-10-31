@@ -1,6 +1,11 @@
 Changelog
 =========
 
+v0.1.3a1, 31/10/2018
+--------------------
+* Update requests lib to 2.20.0. (See CVE-2018-18074)
+* Improvements to documentation.
+
 v0.1.2a1, 14/08/2018
 --------------------
 * Travis-CI integration. (#7)
