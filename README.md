@@ -3,6 +3,8 @@ Python library for DPS PaymentExpress PxPay 2.0 API
 
 Documentation: https://pxpaypy.readthedocs.io/en/latest/
 
+**Note: This repository has not been used since Dec 2018 and is therefore currently archived. You are happy to fork it, but before using it, please verify that the libraries and packages included haven't been subject to a security vulnerability in the meantime.**
+
 ## Features
 * Supports DPS PxPay 2.0 API
 * Supports DPS PxPost token based payments with CardNumber2
