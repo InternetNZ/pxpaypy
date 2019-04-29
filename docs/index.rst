@@ -9,6 +9,8 @@ PxPayPy
 PxPayPy is a Python library for DPS PaymentExpress PxPay 2.0 API. PxPayPy has
 been tested to work with Python 3.5+.
 
+**Note: This repository has not been used since Dec 2018 and is therefore currently archived. You are happy to fork it, but before using it, please verify that the libraries and packages included haven't been subject to a security vulnerability in the meantime.**
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
