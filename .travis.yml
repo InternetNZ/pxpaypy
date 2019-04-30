@@ -8,6 +8,7 @@ python:
 install:
 - pip install -r requirements.txt
 - pip install -r requirements.dev.txt
+- pip install -r requirements.sec.txt
 - pip install -r requirements.docs.txt
 script:
 - cp tests/config.ini.example tests/config.ini
@@ -16,6 +17,10 @@ script:
 - sed -i "s/PXPost_dev_user_name/${PXPOST_USER_NAME}/" tests/config.ini
 - sed -i "s/PXPost_dev_password/${PXPOST_PASSWORD}/" tests/config.ini
 - python -m unittest discover tests -p "*.py"
+- bandit -r pxpaypy
+- safety check -r requirements.txt
+- safety check -r requirements.dev.txt
+- safety check -r requirements.docs.txt
 - sphinx-build -nW  docs docs/_build
 env:
   global:
